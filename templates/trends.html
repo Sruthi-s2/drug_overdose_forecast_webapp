@@ -1,0 +1,72 @@
+{% extends 'base.html' %}
+{% block title %}Trends | Overdose Analysis{% endblock %}
+
+{% block content %}
+<div class="container-fluid mt-4 mb-5">
+  <div class="row">
+    <div class="col-md-4 bg-light p-4 shadow-sm rounded">
+      <h5 class="text-primary mb-3">Filter Trends</h5>
+      <form id="trendFilterForm">
+        <div class="row mb-3">
+          <div class="col-md-4">
+            <label class="form-label">State</label>
+            <select id="stateFilter" class="form-select" multiple style="height: 150px">
+              <option value="ALL">All</option>
+              {% for state in states %}<option value="{{ state }}">{{ state }}</option>{% endfor %}
+            </select>
+          </div>
+          <div class="col-md-4">
+            <label class="form-label">Year</label>
+            <select id="yearFilter" class="form-select" multiple style="height: 150px">
+              <option value="ALL">All</option>
+              {% for year in years %}<option value="{{ year }}">{{ year }}</option>{% endfor %}
+            </select>
+          </div>
+          <div class="col-md-4">
+            <label class="form-label">Month</label>
+            <select id="monthFilter" class="form-select" multiple style="height: 150px">
+              <option value="ALL">All</option>
+              {% for month in months %}<option value="{{ month }}">{{ month }}</option>{% endfor %}
+            </select>
+          </div>
+        </div>
+        <div class="row mb-3">
+          <div class="col-12">
+            <label class="form-label">Indicator</label>
+            <select id="indicatorFilter" class="form-select" multiple style="height: 150px">
+              <option value="ALL">All</option>
+              {% for ind in indicators %}<option value="{{ ind }}">{{ ind }}</option>{% endfor %}
+            </select>
+          </div>
+        </div>
+      </form>
+    </div>
+
+    <div class="col-md-8">
+      <div class="bg-white shadow-sm p-3 rounded mb-3">
+        <h6 class="text-secondary">📈 Overdose Deaths by Year</h6>
+        <div id="lineChart"></div>
+      </div>
+      <div class="row g-2">
+        <div class="col-md-6">
+          <div class="bg-white shadow-sm p-3 rounded">
+            <h6 class="text-secondary">🧪 % Deaths by Drug</h6>
+            <div id="donutChart"></div>
+          </div>
+        </div>
+        <div class="col-md-6">
+          <div class="bg-white shadow-sm p-3 rounded">
+            <h6 class="text-secondary">🗺️ Total Deaths per State (in 25,000s)</h6>
+            <div id="barChart"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+<script src="{{ url_for('static', filename='plotly_script.js') }}"></script>
+{% endblock %}

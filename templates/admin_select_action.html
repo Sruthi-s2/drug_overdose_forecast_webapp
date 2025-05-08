@@ -1,0 +1,32 @@
+{% extends 'base.html' %}
+{% block title %}Admin Panel | Overdose Trends{% endblock %}
+
+{% block content %}
+<div class="container mt-4 mb-5">
+  <div class="p-4 bg-white shadow-sm border rounded" style="max-width: 700px;">
+    <h3 class="mb-3 text-dark">Admin Panel</h3>
+
+    <div class="mb-4">
+      <label for="adminAction" class="form-label fw-semibold">Choose an Action:</label>
+      <select id="adminAction" class="form-select" onchange="handleAdminAction()">
+        <option value="">-- Select --</option>
+        <option value="insert">Insert Record</option>
+        <option value="modify">Modify Record</option>
+        <option value="delete">Delete Record</option>
+        <option value="manage_users">Manage Users</option>
+      </select>
+    </div>
+  </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+function handleAdminAction() {
+  const action = document.getElementById('adminAction').value;
+  if (action) {
+    window.location.href = `/admin/${action}`;
+  }
+}
+</script>
+{% endblock %}

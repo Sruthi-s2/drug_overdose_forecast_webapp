@@ -1,0 +1,95 @@
+{% extends 'base.html' %}
+{% block title %}Prediction | Overdose Forecast{% endblock %}
+
+{% block content %}
+<div class="container mt-5 mb-5">
+  <div class="bg-light p-4 shadow-sm rounded">
+    <h4 class="text-primary mb-4">📈 Predicted Overdose Deaths</h4>
+
+    <form id="predictForm" class="row g-3 mb-4">
+      <div class="col-md-4">
+        <label class="form-label">State</label>
+        <select id="predictState" class="form-select">
+          <option>Ohio</option>
+          <option>California</option>
+          <option>New York</option>
+          <option>Texas</option>
+          <option>Florida</option>
+        </select>
+      </div>
+      <div class="col-md-4">
+        <label class="form-label">Drug Indicator</label>
+        <select id="predictIndicator" class="form-select">
+          <option>Opioids (T40.0-T40.4,T40.6)</option>
+          <option>Synthetic opioids, excl. methadone (T40.4)</option>
+          <option>Natural & semi-synthetic opioids (T40.2)</option>
+          <option>Psychostimulants with abuse potential (T43.6)</option>
+          <option>Heroin (T40.1)</option>
+          <option>Cocaine (T40.5)</option>
+          <option>Methadone (T40.3)</option>
+        </select>
+      </div>
+      <div class="col-md-4">
+        <label class="form-label">Forecast Year</label>
+        <select id="predictYear" class="form-select">
+          <option>2024</option>
+          <option>2025</option>
+          <option>2026</option>
+          <option>2027</option>
+          <option>2028</option>
+          <option>2029</option>
+          <option>2030</option>
+          <option>2031</option>
+          <option>2032</option>
+          <option>2033</option>
+        </select>
+      </div>
+      <div class="col-12">
+        <button type="submit" class="btn btn-primary">Get Prediction</button>
+      </div>
+    </form>
+
+    <div id="predictionResult" class="alert alert-info" style="display: none;">
+      <strong>Prediction Result:</strong><br>
+      Estimated <span id="predictedDeaths">--</span> deaths in 
+      <span id="predictedYear">--</span> due to 
+      <span id="predictedDrug">--</span> in 
+      <span id="predictedState">--</span>.
+    </div>
+  </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+  document.getElementById("predictForm").addEventListener("submit", function (e) {
+    e.preventDefault();
+
+    const state = document.getElementById("predictState").value;
+    const drug = document.getElementById("predictIndicator").value;
+    const year = parseInt(document.getElementById("predictYear").value);
+
+    const drugRiskBase = {
+      "Opioids (T40.0-T40.4,T40.6)": 60000,
+      "Synthetic opioids, excl. methadone (T40.4)": 50000,
+      "Natural & semi-synthetic opioids (T40.2)": 40000,
+      "Psychostimulants with abuse potential (T43.6)": 30000,
+      "Heroin (T40.1)": 35000,
+      "Cocaine (T40.5)": 20000,
+      "Methadone (T40.3)": 15000
+    };
+
+    const base = drugRiskBase[drug] || 20000;
+    const growthRate = Math.random() * (0.1 - 0.03) + 0.03; // 3–10%
+    const yearsAhead = year - 2023;
+    const predicted = Math.round(base * Math.pow(1 + growthRate, yearsAhead));
+
+    document.getElementById("predictedState").textContent = state;
+    document.getElementById("predictedDrug").textContent = drug;
+    document.getElementById("predictedYear").textContent = year;
+    document.getElementById("predictedDeaths").textContent = predicted.toLocaleString();
+
+    document.getElementById("predictionResult").style.display = "block";
+  });
+</script>
+{% endblock %}

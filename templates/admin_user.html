@@ -1,0 +1,103 @@
+{% extends 'base.html' %}
+{% block title %}Manage Users | Admin Panel{% endblock %}
+
+{% block content %}
+<div class="container mt-4 mb-5">
+  <div class="p-4 bg-white shadow-sm border rounded">
+    <h4 class="mb-4 text-dark">Manage Users</h4>
+
+    {% with messages = get_flashed_messages(with_categories=true) %}
+      {% if messages %}
+        {% for category, message in messages %}
+          <div class="alert alert-{{ category }} alert-dismissible fade show" role="alert">
+            {{ message }}
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+          </div>
+        {% endfor %}
+      {% endif %}
+    {% endwith %}
+
+    <!-- 🔍 Search Form -->
+    <form method="GET" action="/admin/user_management" class="row g-3 align-items-end mb-4">
+      <div class="col-md-6">
+        <label class="form-label">Email</label>
+        <input type="text" name="email" class="form-control" value="{{ request.args.get('email', '') }}">
+      </div>
+      <div class="col-md-4">
+        <label class="form-label">Role</label>
+        <select name="role" class="form-select">
+          <option value="">All</option>
+          <option value="admin" {% if request.args.get('role') == 'admin' %}selected{% endif %}>Admin</option>
+          <option value="user" {% if request.args.get('role') == 'user' %}selected{% endif %}>User</option>
+        </select>
+      </div>
+      <div class="col-md-2">
+        <button type="submit" class="btn btn-primary w-100">Search</button>
+      </div>
+    </form>
+
+    <!-- 👥 User List with Delete -->
+    {% if users and users|length > 0 %}
+    <form method="POST" action="/admin/delete_selected_users">
+      <div class="table-responsive">
+        <table class="table table-bordered table-sm align-middle">
+          <thead>
+            <tr>
+              <th><input type="checkbox" onclick="toggleAll(this)"></th>
+              <th>Email</th>
+              <th>Role</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for user in users %}
+              <tr>
+                <td><input type="checkbox" name="emails" value="{{ user.email }}"></td>
+                <td>{{ user.email }}</td>
+                <td>{{ user.role }}</td>
+              </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+      <button type="submit" class="btn btn-danger mt-2">Delete Selected</button>
+    </form>
+    {% else %}
+      <p class="text-muted">No users found.</p>
+    {% endif %}
+
+    <hr class="my-5">
+
+    <!-- ➕ Create User -->
+    <h5 class="text-success">Create New User</h5>
+    <form method="POST" action="/admin/create_user_record">
+      <div class="row">
+        <div class="col-md-4 mb-3">
+          <label class="form-label">Email</label>
+          <input type="email" name="email" class="form-control" required>
+        </div>
+        <div class="col-md-4 mb-3">
+          <label class="form-label">Password</label>
+          <input type="password" name="password" class="form-control" required>
+        </div>
+        <div class="col-md-4 mb-3">
+          <label class="form-label">Role</label>
+          <select name="role" class="form-select" required>
+            <option value="">Select Role</option>
+            <option value="user">User</option>
+            <option value="admin">Admin</option>
+          </select>
+        </div>
+      </div>
+      <button type="submit" class="btn btn-success">Create User</button>
+    </form>
+  </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+function toggleAll(master) {
+  document.querySelectorAll('input[name="emails"]').forEach(cb => cb.checked = master.checked);
+}
+</script>
+{% endblock %}

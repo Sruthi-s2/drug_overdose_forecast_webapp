@@ -1,0 +1,46 @@
+{% extends 'base.html' %}
+{% block title %}Home | Overdose Trends{% endblock %}
+{% block content %}
+<div class="section">
+  <h4>Overdose Record Viewer</h4>
+  <div class="row mb-3">
+    <div class="col-md-2">
+      <label for="limitFilter" class="form-label">Records to show</label>
+      <select id="limitFilter" class="form-select">
+        <option value="8">8</option>
+        <option value="15">15</option>
+        <option value="25">25</option>
+        <option value="50">50</option>
+        <option value="100">100</option>
+      </select>
+    </div>
+    <div class="col-md-2">
+      <label for="yearFilter" class="form-label">Year</label>
+      <select id="yearFilter" class="form-select"><option value="">All</option></select>
+    </div>
+    <div class="col-md-2">
+      <label for="monthFilter" class="form-label">Month</label>
+      <select id="monthFilter" class="form-select"><option value="">All</option></select>
+    </div>
+    <div class="col-md-3">
+      <label for="stateFilter" class="form-label">State</label>
+      <select id="stateFilter" class="form-select"><option value="">All</option></select>
+    </div>
+    <div class="col-md-3">
+      <label for="indicatorFilter" class="form-label">Drug/Indicator</label>
+      <select id="indicatorFilter" class="form-select"><option value="">All</option></select>
+    </div>
+  </div>
+  <button class="btn btn-primary mb-3" onclick="getRecords()">Apply Filter</button>
+  <div class="table-responsive">
+    <table class="table table-striped" id="dataTable">
+      <thead>
+        <tr>
+          <th>Year</th><th>Month</th><th>State</th><th>Indicator</th><th>Deaths</th>
+        </tr>
+      </thead>
+      <tbody></tbody>
+    </table>
+  </div>
+</div>
+{% endblock %}

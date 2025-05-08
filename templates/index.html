@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Overdose Trends & Forecasting</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet"/>
+  <style>
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background-color: #f0f4f8;
+      padding: 2rem;
+    }
+    h1, h4 { color: #2c3e50; }
+    .section {
+      background-color: #ffffff;
+      border-radius: 12px;
+      box-shadow: 0 0 12px rgba(0, 0, 0, 0.05);
+      padding: 2rem;
+      margin-bottom: 2rem;
+    }
+    .btn-primary {
+      background-color: #5b8def;
+      border: none;
+    }
+    .btn-primary:hover {
+      background-color: #4176e0;
+    }
+    .table th, .table td {
+      vertical-align: middle;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+
+    <!-- Header + Logout -->
+    <div class="d-flex justify-content-between align-items-center mb-4">
+      <h1>Overdose Trends & Forecasting</h1>
+      <a href="{{ url_for('auth_routes.logout') }}" class="btn btn-outline-danger">Logout</a>
+    </div>
+
+    <!-- Record Viewer Section -->
+    <div class="section">
+      <h4>Overdose Record Viewer</h4>
+      <div class="row mb-3">
+        <div class="col-md-3">
+          <label for="yearFilter" class="form-label">Year</label>
+          <select id="yearFilter" class="form-select"><option value="">All</option></select>
+        </div>
+        <div class="col-md-3">
+          <label for="monthFilter" class="form-label">Month</label>
+          <select id="monthFilter" class="form-select"><option value="">All</option></select>
+        </div>
+        <div class="col-md-3">
+          <label for="stateFilter" class="form-label">State</label>
+          <select id="stateFilter" class="form-select"><option value="">All</option></select>
+        </div>
+        <div class="col-md-3">
+          <label for="indicatorFilter" class="form-label">Drug/Indicator</label>
+          <select id="indicatorFilter" class="form-select"><option value="">All</option></select>
+        </div>
+      </div>
+      <button class="btn btn-primary mb-3" onclick="getRecords()">Apply Filter</button>
+      <div class="table-responsive">
+        <table class="table table-striped" id="dataTable">
+          <thead>
+            <tr>
+              <th>Year</th><th>Month</th><th>State</th><th>Indicator</th><th>Deaths</th>
+            </tr>
+          </thead>
+          <tbody></tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- Trend Visualization Section -->
+    <div class="section">
+      <h4>Trend Explorer</h4>
+      <div class="row mb-3">
+        <div class="col-md-4">
+          <label for="trendBy" class="form-label">Show Trend By</label>
+          <select id="trendBy" class="form-select">
+            <option value="">Select Parameter</option>
+            <option value="state">State</option>
+            <option value="year">Year</option>
+            <option value="indicator">Indicator</option>
+          </select>
+        </div>
+        <div class="col-md-4">
+          <label for="trendValue" class="form-label">Select Value</label>
+          <select id="trendValue" class="form-select"><option value="">Select</option></select>
+        </div>
+        <div class="col-md-4 d-flex align-items-end">
+          <button class="btn btn-primary w-100" onclick="loadTrendChart()">Show Trend</button>
+        </div>
+      </div>
+      <div id="trendChart"></div>
+    </div>
+
+    <!-- Prediction Section -->
+    <div class="section">
+      <h4>Forecast Future Overdose Trends</h4>
+      <div class="row mb-3">
+        <div class="col-md-4">
+          <label for="predState" class="form-label">State</label>
+          <select id="predState" class="form-select"><option value="">Select State</option></select>
+        </div>
+        <div class="col-md-4">
+          <label for="predIndicator" class="form-label">Drug/Indicator</label>
+          <select id="predIndicator" class="form-select"><option value="">Select Indicator</option></select>
+        </div>
+        <div class="col-md-4">
+          <label for="predMonths" class="form-label">Prediction Horizon</label>
+          <select id="predMonths" class="form-select">
+            <option value="3">Next 3 Months</option>
+            <option value="6">Next 6 Months</option>
+            <option value="12">Next 12 Months</option>
+          </select>
+        </div>
+      </div>
+      <button class="btn btn-primary mb-3" onclick="generateForecast()">Generate Forecast</button>
+      <div id="forecastChart"></div>
+    </div>
+
+    <!-- Admin Panel (visible only if admin) -->
+    {% if session['role'] == 'admin' %}
+    <div class="section">
+      <h4>Admin Panel</h4>
+      <div class="row mb-3">
+        <div class="col-md-4">
+          <label for="adminAction" class="form-label">Select Action</label>
+          <select id="adminAction" class="form-select" onchange="handleAdminAction()">
+            <option value="">Choose</option>
+            <option value="insert">Insert</option>
+            <option value="modify">Modify</option>
+            <option value="delete">Delete</option>
+          </select>
+        </div>
+      </div>
+      <div id="adminPanelContent">
+        <!-- Dynamic content will be injected here -->
+      </div>
+    </div>
+    {% endif %}
+
+  </div>
+
+  <script src="{{ url_for('static', filename='script.js') }}"></script>
+</body>
+</html>
